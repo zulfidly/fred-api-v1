@@ -34,5 +34,17 @@ import {
   Location,
   Setting,
 } from '@element-plus/icons-vue'
+import { onMounted } from 'vue'
+import { useFetch } from '@vueuse/core'
+
+onMounted(()=> {
+    useFetch(
+        'https://api.stlouisfed.org/fred/category?category_id=10&api_key=040734c7c172353e3248d5fd01746335&file_type=json'
+    ).then((res)=> {
+        const { isFetching, error, data } = res
+        console.log('called', JSON.stringify(data.value))
+    })
+})
+
 
 </script>
