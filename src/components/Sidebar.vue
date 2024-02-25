@@ -28,6 +28,7 @@
 </template>
 
 <script setup>
+import { ElMessage } from 'element-plus'
 import {
   Document,
   Menu as IconMenu,
@@ -37,14 +38,20 @@ import {
 import { onMounted } from 'vue'
 import { useFetch } from '@vueuse/core'
 
-onMounted(()=> {
-    useFetch(
-        'https://api.stlouisfed.org/fred/category?category_id=10&api_key=040734c7c172353e3248d5fd01746335&file_type=json'
-    ).then((res)=> {
-        const { isFetching, error, data } = res
-        console.log('called', JSON.stringify(data.value))
-    })
+onMounted(async()=> {
+  const { data }  = await useFetch(
+    'https://api.stlouisfed.org/fred/category?category_id=10&api_key=040734c7c172353e3248d5fd01746335&file_type=json',
+    {
+      onFetchError(res) {
+        console.log('onFetchError():', res);
+        ElMessage({
+          type: 'warning',
+          duration: 8000,
+          message: res.error.stack
+        })
+        ElMessage.error(JSON.stringify(res.error.message))
+      }
+    }
+  )
 })
-
-
 </script>
